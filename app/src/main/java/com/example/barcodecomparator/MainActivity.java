@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     public EditText editTexSlave;
     public Button buttonReset;
     public Button button_ng;
-    //private final String TAG = "AUC_SIMPLE";
+    private final String TAG = "Main Activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
