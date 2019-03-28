@@ -1,42 +1,48 @@
 package com.example.barcodecomparator;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.Button;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity {
-    public EditText editTextMaster;
-    public EditText editTexSlave;
-    public Button buttonReset;
-    public Button button_ng;
+    private EditText editTextMaster;
+    private EditText editTexSlave;
+    private Button buttonReset;
+    private Button button_ng;
+    private AlertDialog.Builder ngDialog;
     private final String TAG = "Main Activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         editTextMaster = findViewById(R.id.result_master);
         editTexSlave = findViewById(R.id.result_slave);
         buttonReset = findViewById(R.id.button_reset);
         button_ng = findViewById(R.id.button_sam2);
+
+        ngDialog = new AlertDialog.Builder(this)
+            .setTitle("MISMATCH")
+            .setMessage("Barcodes are mismatched")
+            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.d(TAG, "Test func");
+                }
+            })
+            .setNegativeButton(android.R.string.no, null)
+            .setIcon(R.drawable.error);
 
         /*Reset values in all  edit text*/
         buttonReset.setOnClickListener(new View.OnClickListener() {
@@ -96,27 +102,48 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        editTextMaster.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                Log.d(TAG, "Master barcode has been set");
+                return false;
+            }
+        });
+
+        editTexSlave.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                Log.d(TAG, "Slave barcode has been set");
+                compareBarcodes();
+                return false;
+            }
+        });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private void compareBarcodes() {
+        if (editTextMaster.getText().toString().equals(editTexSlave.getText().toString())) {
+            Log.d(TAG, "Equal");
+            MediaPlayer successSound = MediaPlayer.create(this, R.raw.success);
+            successSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mp.release();
+                }
+            });
+            successSound.start();
+        } else {
+            Log.d(TAG, "Not Equal");
+            ngDialog.show();
+            MediaPlayer errorSound = MediaPlayer.create(this, R.raw.invalid);
+            errorSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mp.release();
+                }
+            });
+            errorSound.start();
+            errorSound.setLooping(true);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -24,6 +24,8 @@
         <item name="android:bottomBright">@drawable/dialog_footer</item>
         <item name="android:bottomMedium">@drawable/dialog_footer</item>
         <item name="android:centerMedium">@drawable/dialog_body</item>
+        <item name="android:windowEnterAnimation">@anim/enter</item>
+        <item name="android:windowExitAnimation">@anim/exit</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
