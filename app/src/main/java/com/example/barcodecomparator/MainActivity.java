@@ -38,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
         buttonReset = findViewById(R.id.button_reset);
         button_ng = findViewById(R.id.button_sam2);
 
+        //focus cursor to first edit text
+        editTextMaster.requestFocus();
+
+
         /*Reset values in all  edit text*/
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
