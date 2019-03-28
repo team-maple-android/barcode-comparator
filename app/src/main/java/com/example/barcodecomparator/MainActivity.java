@@ -1,8 +1,10 @@
 package com.example.barcodecomparator;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,6 +15,8 @@ import android.widget.Button;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.IOException;
+
 
 public class MainActivity extends AppCompatActivity {
     private EditText editTextMaster;
@@ -20,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private Button buttonReset;
     private Button button_ng;
     private AlertDialog.Builder ngDialog;
+    private AlertDialog.Builder okDialog;
+    private MediaPlayer errorSound;
     private final String TAG = "Main Activity";
 
     @Override
@@ -35,6 +41,26 @@ public class MainActivity extends AppCompatActivity {
         ngDialog = new AlertDialog.Builder(this)
                 .setTitle("MISMATCH")
                 .setMessage("Barcodes are mismatched")
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "Test func");
+                        errorSound.setLooping(false);
+                        errorSound.stop();
+                        try {
+                            errorSound.prepare();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(R.drawable.error);
+
+        okDialog = new AlertDialog.Builder(this)
+                .setTitle("MATCH")
+                .setMessage("Barcodes are matched")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -42,7 +68,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .setNegativeButton(android.R.string.no, null)
-                .setIcon(R.drawable.error);
+                .setIcon(android.R.drawable.checkbox_on_background);
+
+        errorSound = MediaPlayer.create(this, R.raw.invalid);
 
         /*Reset values in all  edit text*/
         buttonReset.setOnClickListener(new View.OnClickListener() {
@@ -131,11 +159,11 @@ public class MainActivity extends AppCompatActivity {
                     mp.release();
                 }
             });
+            timerDelayRemoveDialog(600, okDialog.show());
             successSound.start();
         } else {
             Log.d(TAG, "Not Equal");
             ngDialog.show();
-            MediaPlayer errorSound = MediaPlayer.create(this, R.raw.invalid);
             errorSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
@@ -145,5 +173,14 @@ public class MainActivity extends AppCompatActivity {
             errorSound.start();
             errorSound.setLooping(true);
         }
+    }
+
+    private void timerDelayRemoveDialog(long time, final Dialog d) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                d.dismiss();
+            }
+        }, time);
     }
 }
