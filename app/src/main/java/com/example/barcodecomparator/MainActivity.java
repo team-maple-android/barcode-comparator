@@ -1,14 +1,12 @@
 package com.example.barcodecomparator;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.widget.EditText;
@@ -23,12 +21,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextMaster;
     private EditText editTexSlave;
     private Button buttonReset;
-    private Button button_ng;
-    private Button button_ok;
-    private AlertDialog.Builder ngDialog;
-    private AlertDialog.Builder okDialog;
     private MediaPlayer errorSound;
     private final String TAG = "Main Activity";
+
+    private Button buttonNgDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,122 +34,38 @@ public class MainActivity extends AppCompatActivity {
         editTextMaster = findViewById(R.id.result_master);
         editTexSlave = findViewById(R.id.result_slave);
         buttonReset = findViewById(R.id.button_reset);
-        button_ng = findViewById(R.id.button_sam2);
-        button_ok = findViewById(R.id.button_sam1);
-
-        ngDialog = new AlertDialog.Builder(this)
-                .setTitle("MISMATCH")
-                .setMessage("Barcodes are mismatched")
-                .setCancelable(false)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "Test func");
-                        errorSound.setLooping(false);
-                        errorSound.stop();
-                        try {
-                            errorSound.prepare();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(R.drawable.error);
-
-        okDialog = new AlertDialog.Builder(this)
-                .setTitle("MATCH")
-                .setMessage("Barcodes are matched")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "Test func");
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(android.R.drawable.checkbox_on_background);
-
+        buttonNgDialog = findViewById(R.id.btn_ng_dialog);
         errorSound = MediaPlayer.create(this, R.raw.invalid);
 
-        /*Reset values in all  edit text*/
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Set the first EditText empty
-                editTextMaster.setText("");
-                // Clear the second EditText
-                editTexSlave.getText().clear();
-                // Focus the text field after clear
-                editTextMaster.requestFocus();
-            }
-        });
-        /*End - clear values*/
-
-        /* pop-up message for MisMatched*/
-        button_ng.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setCancelable( false );
-                LayoutInflater inflater = getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.alert_dialog_custom_view,null);
-                builder.setView(dialogView);
-                final AlertDialog dialog = builder.create();
-                dialog.show();
-
-                Button dialogButton = dialog.findViewById(R.id.btn_dialog);
-                dialogButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //close alert dialog
-                        dialog.cancel();
-                        //clear first edit text
-                        editTextMaster.setText("");
-                        // Clear the second EditText
-                        editTexSlave.getText().clear();
-                        // Focus the text field after clear
-                        editTextMaster.requestFocus();
-                    }
-                });
-
+                reset();
             }
         });
 
-        /* pop-up message for Matched*/
-        button_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setCancelable( false );
-                LayoutInflater inflater = getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.alert_dialog_custom_view_success,null);
-                builder.setView(dialogView);
-                final AlertDialog dialog = builder.create();
-                dialog.show();
-                //clear first edit text
-                editTextMaster.setText("");
-                // Clear the second EditText
-                editTexSlave.getText().clear();
-                // Focus the text field after clear
-                editTextMaster.requestFocus();
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.cancel();
-                    }
-                },500);
-
-
-            }
-        });
-
+//        buttonNgDialog.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                errorSound.setLooping(false);
+//                errorSound.stop();
+//                try {
+//                    errorSound.prepare();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
         editTextMaster.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (editTextMaster.getText().toString().isEmpty()) {
+                editTextMaster.requestFocus();
+            } else {
                 Log.d(TAG, "Master barcode has been set");
-                return false;
+            }
+            return false;
             }
         });
 
@@ -170,24 +82,24 @@ public class MainActivity extends AppCompatActivity {
     private void compareBarcodes() {
         if (editTextMaster.getText().toString().equals(editTexSlave.getText().toString())) {
             Log.d(TAG, "Equal");
-            MediaPlayer successSound = MediaPlayer.create(this, R.raw.success);
+            MediaPlayer successSound = MediaPlayer.create(this, R.raw.success2);
             successSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     mp.release();
                 }
             });
-            timerDelayRemoveDialog(600, okDialog.show());
+            showOkDialog();
             successSound.start();
         } else {
             Log.d(TAG, "Not Equal");
-            ngDialog.show();
             errorSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mp) {
                     mp.release();
                 }
             });
+            showNgDialog();
             errorSound.start();
             errorSound.setLooping(true);
         }
@@ -197,8 +109,41 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                d.dismiss();
+            d.dismiss();
+            reset();
             }
         }, time);
+    }
+
+//    public void onClickNgButtonDialog(View v) {
+//        errorSound.setLooping(false);
+//        errorSound.stop();
+//        try {
+//            errorSound.prepare();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    private void showOkDialog() {
+        AlertDialog.Builder okDialog = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View okDialogView = inflater.inflate(R.layout.ok_custom_dialog, null);
+        okDialog.setView(okDialogView);
+        timerDelayRemoveDialog(600, okDialog.show());
+    }
+
+    private void showNgDialog() {
+        AlertDialog.Builder ngDialog = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View ngDialogView = inflater.inflate(R.layout.ng_custom_dialog, null);
+        ngDialog.setView(ngDialogView);
+        ngDialog.show();
+    }
+
+    private void reset() {
+        editTextMaster.setText("");
+        editTexSlave.setText("");
+        editTextMaster.requestFocus();
     }
 }

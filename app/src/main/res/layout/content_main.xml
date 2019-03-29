@@ -75,37 +75,11 @@
             android:id="@+id/button_reset"
             android:text="C L E A R"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="75dp"
             android:layout_marginLeft="70dp"
             android:layout_marginRight="70dp"
             android:layout_marginTop="40dp"
             android:textSize="50dp"
-            android:background="@drawable/button_shape"
-            android:textColor="#fff"
-            android:textStyle="normal|bold"/>
-
-        <Button
-            android:id="@+id/button_sam1"
-            android:text="O  K "
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginLeft="70dp"
-            android:layout_marginRight="70dp"
-            android:layout_marginTop="40dp"
-            android:textSize="30dp"
-            android:background="@drawable/button_shape"
-            android:textColor="#fff"
-            android:textStyle="normal|bold"/>
-
-        <Button
-            android:id="@+id/button_sam2"
-            android:text=" N  G "
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginLeft="70dp"
-            android:layout_marginRight="70dp"
-            android:layout_marginTop="40dp"
-            android:textSize="30dp"
             android:background="@drawable/button_shape"
             android:textColor="#fff"
             android:textStyle="normal|bold"/>
