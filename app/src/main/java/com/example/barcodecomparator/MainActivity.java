@@ -1,13 +1,16 @@
 package com.example.barcodecomparator;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.Button;
 import android.view.View;
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTexSlave;
     private Button buttonReset;
     private Button button_ng;
+    private Button button_ok;
     private AlertDialog.Builder ngDialog;
     private final String TAG = "Main Activity";
 
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         editTexSlave = findViewById(R.id.result_slave);
         buttonReset = findViewById(R.id.button_reset);
         button_ng = findViewById(R.id.button_sam2);
+        button_ok = findViewById(R.id.button_sam1);
 
         ngDialog = new AlertDialog.Builder(this)
                 .setTitle("MISMATCH")
@@ -58,30 +63,25 @@ public class MainActivity extends AppCompatActivity {
         });
         /*End - clear values*/
 
-
-
         /* pop-up message for MisMatched*/
         button_ng.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //ContextThemeWrapper ctw = new ContextThemeWrapper(MainActivity.this, R.style.MyTheme);
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-                //LayoutInflater inflater = getLayoutInflater();
-                //View dialogView = inflater.inflate(R.layout.alert_dialog_custom_view,null);
-                //builder.setView(dialogView);
-
-                builder.setTitle("SOMETHING WENT WRONG!");
-                builder.setMessage("\n\t\t\t\t\t\t Barcode doesn't match.");
-                builder.setIcon(R.drawable.error);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setCancelable( false );
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.alert_dialog_custom_view,null);
+                builder.setView(dialogView);
+                final AlertDialog dialog = builder.create();
+                dialog.show();
 
-                //actions when button clicked
-                builder.setPositiveButton("N G", new DialogInterface.OnClickListener() {
-
+                Button dialogButton = dialog.findViewById(R.id.btn_dialog);
+                dialogButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(View v) {
+                        //close alert dialog
+                        dialog.cancel();
+                        //clear first edit text
                         editTextMaster.setText("");
                         // Clear the second EditText
                         editTexSlave.getText().clear();
@@ -90,18 +90,38 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
+            }
+        });
 
-                //button formatting
-                final Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                positiveButton.setTextSize(TypedValue.COMPLEX_UNIT_SP,15);
-                // positiveButton.setTextColor(Color.rgb(255,255,255));
-                //  positiveButton.setBackgroundColor(Color.rgb(128,195,196));
+        /* pop-up message for Matched*/
+        button_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setCancelable( false );
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.alert_dialog_custom_view_success,null);
+                builder.setView(dialogView);
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+                //clear first edit text
+                editTextMaster.setText("");
+                // Clear the second EditText
+                editTexSlave.getText().clear();
+                // Focus the text field after clear
+                editTextMaster.requestFocus();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.cancel();
+                    }
+                },500);
 
 
             }
         });
+
 
         editTextMaster.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
