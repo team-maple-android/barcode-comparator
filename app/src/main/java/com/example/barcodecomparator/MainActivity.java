@@ -16,15 +16,12 @@ import android.widget.TextView;
 
 import java.io.IOException;
 
-
 public class MainActivity extends AppCompatActivity {
     private EditText editTextMaster;
     private EditText editTexSlave;
     private Button buttonReset;
     private MediaPlayer errorSound;
     private final String TAG = "Main Activity";
-
-    private Button buttonNgDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,38 +31,31 @@ public class MainActivity extends AppCompatActivity {
         editTextMaster = findViewById(R.id.result_master);
         editTexSlave = findViewById(R.id.result_slave);
         buttonReset = findViewById(R.id.button_reset);
-        buttonNgDialog = findViewById(R.id.btn_ng_dialog);
         errorSound = MediaPlayer.create(this, R.raw.invalid);
 
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 reset();
+                errorSound.setLooping(false);
+                errorSound.stop();
+                try {
+                    errorSound.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
-
-//        buttonNgDialog.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                errorSound.setLooping(false);
-//                errorSound.stop();
-//                try {
-//                    errorSound.prepare();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
 
         editTextMaster.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (editTextMaster.getText().toString().isEmpty()) {
-                editTextMaster.requestFocus();
-            } else {
-                Log.d(TAG, "Master barcode has been set");
-            }
-            return false;
+                if (editTextMaster.getText().toString().isEmpty()) {
+                    editTextMaster.requestFocus();
+                } else {
+                    Log.d(TAG, "Master barcode has been set");
+                }
+                return false;
             }
         });
 
@@ -93,12 +83,6 @@ public class MainActivity extends AppCompatActivity {
             successSound.start();
         } else {
             Log.d(TAG, "Not Equal");
-            errorSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    mp.release();
-                }
-            });
             showNgDialog();
             errorSound.start();
             errorSound.setLooping(true);
@@ -115,16 +99,6 @@ public class MainActivity extends AppCompatActivity {
         }, time);
     }
 
-//    public void onClickNgButtonDialog(View v) {
-//        errorSound.setLooping(false);
-//        errorSound.stop();
-//        try {
-//            errorSound.prepare();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private void showOkDialog() {
         AlertDialog.Builder okDialog = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -134,10 +108,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showNgDialog() {
-        AlertDialog.Builder ngDialog = new AlertDialog.Builder(this);
+        final AlertDialog ngDialog = new AlertDialog.Builder(this).create();
         LayoutInflater inflater = getLayoutInflater();
         View ngDialogView = inflater.inflate(R.layout.ng_custom_dialog, null);
         ngDialog.setView(ngDialogView);
+        ngDialog.setCancelable(false);
+        Button buttonNgDialog = ngDialogView.findViewById(R.id.btn_ng_dialog);
+        buttonNgDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Test click");
+                reset();
+                errorSound.setLooping(false);
+                errorSound.stop();
+                try {
+                    errorSound.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ngDialog.dismiss();
+            }
+        });
         ngDialog.show();
     }
 
