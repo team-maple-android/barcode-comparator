@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity {
                     mp.release();
                 }
             });
-            showOkDialog();
             successSound.start();
+            showOkDialog();
         } else {
             Log.d(TAG, "Not Equal");
             showNgDialog();
@@ -95,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 d.dismiss();
                 reset();
-                editTextMaster.setEnabled(true);
-                editTexSlave.setEnabled(true);
             }
         }, time);
     }
@@ -106,23 +104,20 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View okDialogView = inflater.inflate(R.layout.ok_custom_dialog, null);
         okDialog.setView(okDialogView);
-        editTextMaster.setEnabled(false);
-        editTexSlave.setEnabled(false);
         timerDelayRemoveDialog(300, okDialog.show());
     }
 
     private void showNgDialog() {
         final AlertDialog ngDialog = new AlertDialog.Builder(this).create();
         LayoutInflater inflater = getLayoutInflater();
-        View ngDialogView = inflater.inflate(R.layout.ng_custom_dialog, null);
+        final View ngDialogView = inflater.inflate(R.layout.ng_custom_dialog, null);
         ngDialog.setView(ngDialogView);
         ngDialog.setCancelable(false);
         Button buttonNgDialog = ngDialogView.findViewById(R.id.btn_ng_dialog);
-        buttonNgDialog.setFocusable(true);
+        buttonNgDialog.setFocusable(false);
         buttonNgDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Test click");
                 reset();
                 errorSound.setLooping(false);
                 errorSound.stop();
