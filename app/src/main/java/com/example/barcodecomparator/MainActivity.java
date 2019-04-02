@@ -93,8 +93,10 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-            d.dismiss();
-            reset();
+                d.dismiss();
+                reset();
+                editTextMaster.setEnabled(true);
+                editTexSlave.setEnabled(true);
             }
         }, time);
     }
@@ -104,7 +106,9 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         View okDialogView = inflater.inflate(R.layout.ok_custom_dialog, null);
         okDialog.setView(okDialogView);
-        timerDelayRemoveDialog(600, okDialog.show());
+        editTextMaster.setEnabled(false);
+        editTexSlave.setEnabled(false);
+        timerDelayRemoveDialog(300, okDialog.show());
     }
 
     private void showNgDialog() {
@@ -114,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         ngDialog.setView(ngDialogView);
         ngDialog.setCancelable(false);
         Button buttonNgDialog = ngDialogView.findViewById(R.id.btn_ng_dialog);
+        buttonNgDialog.setFocusable(true);
         buttonNgDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
