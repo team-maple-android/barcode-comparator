@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
     private void compareBarcodes() {
         if (editTextMaster.getText().toString().equals(editTexSlave.getText().toString())) {
             Log.d(TAG, "Equal");
+            editTextMaster.setInputType(InputType.TYPE_NULL);
+            editTexSlave.setInputType(InputType.TYPE_NULL);
             MediaPlayer successSound = MediaPlayer.create(this, R.raw.success2);
             successSound.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -93,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                editTextMaster.setInputType(InputType.TYPE_CLASS_TEXT);
+                editTexSlave.setInputType(InputType.TYPE_CLASS_TEXT);
                 d.dismiss();
                 reset();
             }
