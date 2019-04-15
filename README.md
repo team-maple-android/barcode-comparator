@@ -1,5 +1,5 @@
 # AVN Barcode Comparator
-
+Compare barcode inputs using external USB Barcode Scanner.
 
 ## Getting Started
 
@@ -13,7 +13,7 @@ What are things you need to install for the application:
 * [Git](https://git-scm.com/downloads)
 * [Subversion](https://subversion.apache.org/download.cgi?update=201708081800)
 
-### Checkout project
+### Check out project
 
 #### Using Git
 * Android Studio
@@ -34,17 +34,28 @@ What are things you need to install for the application:
         cd ~/AndroidStudioProjects
         ```
 
-    2. Checkout a working copy from a repository.
+    2. Check out a working copy from a repository.
         ```
         git clone https://github.com/team-maple-android/barcode-comparator.git maple-barcode-comparator
         ```
-        After checkout,
+        After check out,
         ```
         cd maple-barcode-comparator
         ```
     3. Open your project in Android Studio.
 
 #### Using SVN
+Check out project using Subversion.
+* Android Studio
+    1. Open your Android Studio. From the menu above, select *File* > *New* > *Project from Version Control* > *Subversion*.
+    2. In *Check out from Subversion* window, click <code>+</code> sign to add repository location. Then enter this *Repository URL* and click *OK*.
+        ```
+        svn://172.18.254.66/QADOCSL/trunk
+        ```
+    3. Select the <code>svn://172.18.254.66/QADOCSL/trunk</code> folder and click *Checkout*.
+    4. From the *Destination Directory* window. Select *AndroidStudioProjects* directory and click *OK*.
+    5. From the *SVN Checkout Options* window. Select your *desired destination* and click *OK*.
+    6. From the *Subversion Working Copy Format* window. Select the default format and click *OK*.    
 
 ## Testing
 Setup the development target.
