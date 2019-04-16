@@ -85,7 +85,7 @@ Open the <code>MainActivity.java</code> file and look for each methods:
 * **onCreate()**
     This method will set the corresponding layout and initialize elements from the view and define listeners for <code>master input</code>, <code>slave input</code>, and <code>clear button</code>.
 * **compareBarcodes()**
-    This method will be called when the <code>master input</code> receives an <code>Enter</code> key. From the name itself implies comparing <code>master</code> to <code>slave</code> barcode inputs, opens a *Dialog* and plays a *beep sound* depending on the condition.
+    This method will be called when the <code>slave input</code> receives an <code>Enter</code> key. From the name itself implies comparing <code>master</code> to <code>slave</code> barcode inputs, opens a *Dialog* and plays a *beep sound* depending on the condition.
 * **showOkDialog()**
     This method will build a dialog from a layout view defined in the resources <code>R.layout.ok_custom_dialog</code> and sets a timer to close itself after <code>300 milliseconds</code>, and plays a *successful beep* indicating an equal <code>master</code> and <code>slave</code> comparison.
 * **timerDelayRemoveDialog()**
