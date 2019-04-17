@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         editTextMaster = findViewById(R.id.result_master);
         editTexSlave = findViewById(R.id.result_slave);
         buttonReset = findViewById(R.id.button_reset);
-        errorSound = MediaPlayer.create(this, R.raw.invalid);
+        errorSound = MediaPlayer.create(this, R.raw.invalidcopy);
 
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
